@@ -212,5 +212,26 @@ def getPagamentos():
         usuarios_json.append(usuario_json)   
     return json.dumps(usuarios_json)
 
+# Método PUT usuarios
+@app.route('/usuarios', methods=['PUT'])
+def updateCliente():
+    conexao = sqlite3.connect("Untitled.db")
+    connection = conexao.cursor()
+    paramentro_id = request.json.get('id')
+    nome = request.json.get('nome')
+    endereco = request.json.get('endereco')
+    telefone = request.json.get('telefone')
+    
+    if paramentro_id:
+        connection.execute(f"UPDATE Clientes SET nome = ?, endereco = ?, telefone = ? WHERE id = ?",
+                           (nome, endereco, telefone, paramentro_id))
+        conexao.commit()
+        connection.close()
+        return json.dumps({'message': 'Cliente atualizado com sucesso!'})
+    else:
+        connection.close()
+        return json.dumps({'error': 'É necessário fornecer o ID do cliente para atualização.'}), 400
+
+
 if __name__ == '__main__':
     app.run(port=8002)
