@@ -1,5 +1,6 @@
 import sqlite3
 import json
+from flask import jsonify
 from flask import Flask,request
 
 app = Flask(__name__)
@@ -273,6 +274,14 @@ def deleteCliente():
     connection.close()
     return json.dumps({'message': 'Cliente excluído com sucesso!'})
 
+
+# Método CONNECT para a tabela 'Funcionarios'
+@app.route('/funcionarios', methods=['CONNECT'])
+def connectFuncionarios():
+    conexao = sqlite3.connect("Untitled.db")
+    connection = conexao.cursor()
+    connection.close()
+    return json.dumps({'message': 'Conexão estabelecida com sucesso!'})
 
 
 if __name__ == '__main__':
