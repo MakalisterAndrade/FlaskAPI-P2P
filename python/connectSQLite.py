@@ -221,16 +221,25 @@ def updateCliente():
     nome = request.json.get('nome')
     endereco = request.json.get('endereco')
     telefone = request.json.get('telefone')
-    
-    if paramentro_id:
-        connection.execute(f"UPDATE Clientes SET nome = ?, endereco = ?, telefone = ? WHERE id = ?",
-                           (nome, endereco, telefone, paramentro_id))
-        conexao.commit()
-        connection.close()
-        return json.dumps({'message': 'Cliente atualizado com sucesso!'})
-    else:
+
+    # Verificar se o ID do cliente é fornecido
+    if not paramentro_id:
         connection.close()
         return json.dumps({'error': 'É necessário fornecer o ID do cliente para atualização.'}), 400
+
+    # Verificar se o cliente existe antes da atualização
+    connection.execute("SELECT * FROM Clientes WHERE id = ?", (paramentro_id,))
+    cliente_existente = connection.fetchone()
+    if not cliente_existente:
+        connection.close()
+        return json.dumps({'error': 'O cliente com o ID fornecido não existe.'}), 404
+
+    # Realizar a atualização do cliente
+    connection.execute("UPDATE Clientes SET nome = ?, endereco = ?, telefone = ? WHERE id = ?",
+                       (nome, endereco, telefone, paramentro_id))
+    conexao.commit()
+    connection.close()
+    return json.dumps({'message': 'Cliente atualizado com sucesso!'})
 
 
 if __name__ == '__main__':
