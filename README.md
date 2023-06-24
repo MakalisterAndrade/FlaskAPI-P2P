@@ -7,7 +7,7 @@
 
 - [x] GET - Obter todos os clientes
 - [x] GET - Obter um cliente por ID
-- [ ] POST - Criar um novo cliente
+- [x] POST - Criar um novo cliente
 - [x] PUT - Atualizar um cliente existente
 - [ ] DELETE - Excluir um cliente
 

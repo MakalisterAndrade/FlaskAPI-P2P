@@ -241,6 +241,39 @@ def updateCliente():
     connection.close()
     return json.dumps({'message': 'Cliente atualizado com sucesso!'})
 
+# Método DELETE para usuários
+@app.route('/usuarios', methods=['DELETE'])
+def deleteCliente():
+    conexao = sqlite3.connect("Untitled.db")
+    connection = conexao.cursor()
+    paramentro_id = request.json.get('id')
+
+    # Verificar se o ID do cliente é fornecido
+    if not paramentro_id:
+        connection.close()
+        return json.dumps({'error': 'É necessário fornecer o ID do cliente para exclusão.'}), 400
+
+    # Verificar se o cliente existe antes da exclusão
+    connection.execute("SELECT * FROM Clientes WHERE id = ?", (paramentro_id,))
+    cliente_existente = connection.fetchone()
+    if not cliente_existente:
+        connection.close()
+        return json.dumps({'error': 'O cliente com o ID fornecido não existe.'}), 404
+
+    # Verificar se o cliente está associado a algum pedido
+    connection.execute("SELECT * FROM Pedidos WHERE cliente_id = ?", (paramentro_id,))
+    pedidos_cliente = connection.fetchall()
+    if pedidos_cliente:
+        connection.close()
+        return json.dumps({'error': 'Não é possível excluir o cliente porque existem pedidos associados a ele.'}), 409
+
+    # Realizar a exclusão do cliente
+    connection.execute("DELETE FROM Clientes WHERE id = ?", (paramentro_id,))
+    conexao.commit()
+    connection.close()
+    return json.dumps({'message': 'Cliente excluído com sucesso!'})
+
+
 
 if __name__ == '__main__':
     app.run(port=8002)
