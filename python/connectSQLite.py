@@ -213,6 +213,80 @@ def getPagamentos():
         usuarios_json.append(usuario_json)   
     return json.dumps(usuarios_json)
 
+@app.route('/inserircliente',methods=['POST'])
+def postCliente():
+    conexao = sqlite3.connect("FlaskAPI-P2P/Untitled.db")
+    connection = conexao.cursor()
+    paramentro_id = request.json.get('id')
+    paramentro_nome = request.json.get('nome')
+    paramentro_endereco = request.json.get('endereco')
+    paramentro_telefone = request.json.get('telefone')
+    connection.execute(f"INSERT INTO Clientes VALUES ('{paramentro_id}','{paramentro_nome}','{paramentro_endereco}','{paramentro_telefone}');")
+    conexao.commit()
+    connection.close()
+    usuarios_json = [{
+        'id': paramentro_id,
+        'nome': paramentro_nome,
+        'endereco': paramentro_endereco,
+        'telefone': paramentro_telefone
+    }]
+    return json.dumps(usuarios_json)
+
+@app.route('/inserirproduto',methods=['POST'])
+def postProduto():
+    conexao = sqlite3.connect("FlaskAPI-P2P/Untitled.db")
+    connection = conexao.cursor()
+    paramentro_id = request.json.get('id')
+    paramentro_nome = request.json.get('nome')
+    paramentro_preco = request.json.get('preco')
+    paramentro_quantidade = request.json.get('quantidade')
+    connection.execute(f"INSERT INTO Produtos VALUES ('{paramentro_id}','{paramentro_nome}','{paramentro_preco}','{paramentro_quantidade}');")
+    conexao.commit()
+    connection.close()
+    usuarios_json = [{
+        'id': paramentro_id,
+        'nome': paramentro_nome,
+        'endereco': paramentro_preco,
+        'telefone': paramentro_quantidade
+    }]
+    return json.dumps(usuarios_json)
+
+@app.route('/atualizarproduto/<id>', methods=['PATCH'])
+def patchAtualizarProduto(id):
+    conexao = sqlite3.connect("FlaskAPI-P2P/Untitled.db")
+    connection = conexao.cursor()
+    paramentro_nome = request.json.get('nome')
+    paramentro_preco = request.json.get('preco')
+    paramentro_quantidade = request.json.get('quantidade')
+    connection.execute(f"UPDATE Produtos SET nome = '{paramentro_nome}', preco = '{paramentro_preco}', quantidade = '{paramentro_quantidade}' WHERE id = '{id}';")
+    conexao.commit()
+    connection.close()
+    produto_json = [{
+        'id': id,
+        'nome': paramentro_nome,
+        'preco': paramentro_preco,
+        'quantidade': paramentro_quantidade
+    }]
+    return json.dumps(produto_json)
+
+@app.route('/atualizarcliente/<id>', methods=['PATCH'])
+def patchAtualizarCliente(id):
+    conexao = sqlite3.connect("FlaskAPI-P2P/Untitled.db")
+    connection = conexao.cursor()
+    paramentro_nome = request.json.get('nome')
+    paramentro_endereco = request.json.get('endereco')
+    paramentro_telefone = request.json.get('telefone')
+    connection.execute(f"UPDATE Clientes SET nome = '{paramentro_nome}', endereco = '{paramentro_endereco}', telefone = '{paramentro_telefone}' WHERE id = '{id}';")
+    conexao.commit()
+    connection.close()
+    cliente_json = [{
+        'id': id,
+        'nome': paramentro_nome,
+        'endereco': paramentro_endereco,
+        'telefone': paramentro_telefone
+    }]
+    return json.dumps(cliente_json)
+
 # Método PUT usuarios
 @app.route('/usuarios', methods=['PUT'])
 def updateCliente():
